@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
@@ -7,21 +6,21 @@ let DogModel = {};
 
 const DogSchema = new mongoose.Schema({
   name: {
-	  type: String,
-	  required: true,
-	  trim: true,
-	  unique: true,
+    type: String,
+    required: true,
+    trim: true,
+    unique: true,
   },
   breed: {
-	  type: String,
-	  required: true,
-	  trim: true,
-	  unique: true,
+    type: String,
+    required: true,
+    trim: true,
+    unique: true,
   },
   age: {
-	  type: Number,
-	  min: 0,
-	  required: true,
+    type: Number,
+    min: 0,
+    required: true,
   },
   createdDate: {
 

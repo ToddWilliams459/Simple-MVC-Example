@@ -18,7 +18,7 @@ const defaultDataD = {
 
 // object for us to keep track of the last Cat we made and dynamically update it sometimes
 let lastAdded = new Cat(defaultData);
-let lastAddedD = new Dog(defaultDataD);
+let srch = new Dog(defaultDataD);
 // function to handle requests to the main page
 // controller functions in Express receive the full HTTP request
 // and a pre-filled out response object to send
@@ -146,7 +146,7 @@ const getName = (req, res) => {
 };
 
 const getNameD = (req, res) => {
-  res.json({ name: lastAddedD.name });
+  res.json({ name: srch.name });
 };
 
 // function to handle a request to set the name
@@ -209,9 +209,9 @@ const setNameDog = (req, res) => {
   const savePromise = newDog.save();
 
   savePromise.then(() => {
-    lastAddedD = newDog;
+    srch = newDog;
 
-    res.json({ name: lastAddedD.name, breed: lastAddedD.breed, age: lastAddedD.age });
+    res.json({ name: srch.name, breed: srch.breed, age: srch.age });
   });
   savePromise.catch(err => res.json({ err }));
 
@@ -258,35 +258,6 @@ const searchName = (req, res) => {
   });
 };
 
-const searchNameD = (req, res) => {
-  if (!req.query.name) {
-    return res.json({ error: 'Name is required to perform a search' });
-  }
-
-  // Call our Cat's static findByName function.
-  // Since this is a static function, we can just call it without an object
-  // pass in a callback (like we specified in the Cat model
-  // Normally would you break this code up, but I'm trying to keep it
-  // together so it's easier to see how the system works
-  // For that reason, I gave it an anonymous callback instead of a
-  // named function you'd have to go find
-  return Dog.findByName(req.query.name, (err, doc) => {
-    // errs, handle them
-    if (err) {
-      return res.json({ err }); // if error, return it
-    }
-
-    // if no matches, let them know
-    // (does not necessarily have to be an error since technically it worked correctly)
-    if (!doc) {
-      return res.json({ error: 'No dogs found' });
-    }
-
-    // if a match, send the match back
-    return res.json({ name: doc.name, age: doc.age });
-  });
-};
-
 // function to handle a request to update the last added object
 // this PURELY exists to show you how to update a model object
 // Normally for an update, you'd get data from the client,
@@ -326,10 +297,10 @@ const updateLastD = (req, res) => {
   // together so it's easier to see how the system works
   // For that reason, I gave it an anonymous callback instead of a
   // named function you'd have to go find
-  return Dog.findByName(req.query.name, (err, doc) => {
+  return Dog.findByName(req.query.name, (mis, doc) => {
     // errs, handle them
-    if (err) {
-      return res.json({ err }); // if error, return it
+    if (mis) {
+      return res.json({ mis }); // if error, return it
     }
 
     // if no matches, let them know
@@ -339,14 +310,15 @@ const updateLastD = (req, res) => {
     }
 
     // if a match, send the match back
-    doc.age++;
+    srch = doc;
+    srch.age++;
 
-    const savePromise = doc.save();
+    const savePromise = srch.save();
 
-    savePromise.then(() => res.json({ name: doc.name, breed: doc.breed, age: doc.age }));
+    savePromise.then(() => res.json({ name: srch.name, breed: srch.breed, age: srch.age }));
 
     savePromise.catch(err => res.json({ err }));
-    return res.json({ name: doc.name, age: doc.age });
+    return res.json({ name: srch.name, age: srch.age });
   });
 };
 
